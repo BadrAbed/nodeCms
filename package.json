@@ -10,8 +10,13 @@
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-handlebars": "^3.0.2",
+    "express-handlebars-sections": "^1.0.1",
+    "express-layout": "^0.1.0",
+    "handlebars-helpers": "^0.10.0",
+    "handlebars-layouts": "^3.1.4",
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
+    "mongoose": "^5.5.5",
     "morgan": "~1.9.0"
   }
 }
