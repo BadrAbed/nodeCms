@@ -1,6 +1,8 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
+var body_parser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var express_handlebars_sections = require('express-handlebars-sections');
@@ -11,7 +13,12 @@ var adminRouter = require('./routes/admin/admin');
 var adminPostsRouter = require('./routes/admin/posts');
 var hbs = require('express-handlebars');
 var layouts = require('handlebars-layouts');
+var select = require('./helpers/handlebars');
+var methodOverride = require('method-override');
+var connectTodataBase = require('./../cms/helpers/connectToDB');
+var fileUpload=require('express-fileupload');
 hbs.create(layouts(hbs));
+
 //var exhb = hbs.create({ extname: 'hbs' });
 var app = express();
 //hbsHelpers.register(exhb.handlebars, {});
@@ -21,19 +28,25 @@ app.engine('hbs', hbs({
     defaultLayout: 'layout',
     layoutsDir: __dirname + '/views/layouts/',
     section: express_handlebars_sections(),
-    partialsDir: __dirname + '/views/partials/'
+    partialsDir: __dirname + '/views/partials/',
+    helpers: {select: select.select, ifEquals: select.ifEquals}
 }));
 //app.engine('html', exhb.engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.set('view options', {layout: __dirname + '/views/layouts/layout'});
-
+app.use(body_parser.urlencoded({extended: true}));
+app.use(body_parser.json());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(methodOverride('_method'));
+// app.use(function () {
+//     connectTodataBase
+// });
+app.use(fileUpload());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/main', homeMainRouter);

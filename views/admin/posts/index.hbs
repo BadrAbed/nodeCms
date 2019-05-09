@@ -1,0 +1,94 @@
+<h1> All Posts </h1>
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>File</th>
+        <th>Title</th>
+
+        <th>Status</th>
+        <th>Allow Comments</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {{# each Posts }}
+        <tr>
+            <td>{{id}}</td>
+            <td><img src="/uploads/{{#if file}}{{file}} {{else}}BMW-i8.jpg{{/if}}  " style="width: 50px;height: 50px"></td>
+            <td>{{title}}</td>
+
+            <td>{{status}}</td>
+            <td>{{allowComments}}</td>
+            <td>
+                <button data-toggle="modal" data-target="#editPost{{id}}" class="btn btn-info"><i
+                        class="fa fa-edit"></i>
+                </button>
+                <a href="/admin/posts/delete/{{id}}" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
+
+            <!-- Modal For Edit Post -->
+
+            <div id="editPost{{id}}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <form action="/admin/posts/edit/{{id}}?_method=Put" method="post">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Edit Post {{title}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="title"> Title</label>
+                                    <input type="text" name="title" id="title" class="form-control" value="{{title}}">
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="status"> Status</label>
+                                    <select name="status" id="status" class="form-control">
+
+                                        <option {{#ifEquals status "public" }} selected  {{/ifEquals}}value="public">
+                                            Public
+                                        </option>
+                                        <option {{#ifEquals status "private" }} selected  {{/ifEquals}} value="private">
+                                            Private
+                                        </option>
+                                        <option {{#ifEquals status "draft" }} selected  {{/ifEquals}} value="draft">
+                                            Draft
+                                        </option>
+
+                                    </select>
+
+                                </div>
+                                <div class="form-check" style="margin: 18px">
+                                    <label for="allowComments">
+                                        <input type="checkbox" name="allowComments" id="allowComments"
+                                               class="form-check-input" value="true" {{#if allowComments}}
+                                               checked {{/if}}>
+                                        Allow Comments
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="body"> Body</label>
+                                    <textarea name="post" id="title" rows="10" class="form-control">{{body}}
+                                    </textarea>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary"> Submit</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <!-- end Modal For Edit Post -->
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
