@@ -13,3 +13,17 @@
 <script src="/javascripts/jquery-easing/jquery.easing.min.js"></script>
 <!-- Custom scripts for all pages-->
 <script src="/javascripts/admin/js/sb-admin.min.js"></script>
+<script src = "/socket.io/socket.io.js"></script>
+
+<script>
+    var socket = io();
+    socket.on('msg', function(data){
+
+   if(data.firstName==='{{{user.firstName}}}'){
+       alert(data.message)
+   }
+   else{
+       alert('none')
+   }
+    });
+</script>

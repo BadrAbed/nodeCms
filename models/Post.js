@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
-
-const User = mongoose.model('posts', {
+const Schema = mongoose.Schema;
+const Post = mongoose.model('posts', {
     user: {},
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'categories'
+    },
     title: {
         type: String,
         required: {
-            values:true,
-            message:'العنوان مطلوب'
+            values: true,
+            message: 'العنوان مطلوب'
         },
         minLength: 3,
         trim: true,
@@ -14,8 +18,8 @@ const User = mongoose.model('posts', {
     status: {
         type: String,
         required: {
-            values:true,
-            message:'الحالة مطلوبة'
+            values: true,
+            message: 'الحالة مطلوبة'
         },
         minLength: 3,
         trim: true,
@@ -29,8 +33,8 @@ const User = mongoose.model('posts', {
     body: {
         type: String,
         required: {
-            values:true,
-            message:'الوصف مطلوب'
+            values: true,
+            message: 'الوصف مطلوب'
         },
         minLength: 40,
         trim: true,
@@ -38,9 +42,18 @@ const User = mongoose.model('posts', {
     , file:
         {
             type: String,
-        }
+        },
+
+    date: {
+        type: Date,
+        default: Date.now()
+    },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'comments'
+    }]
 
 
 });
 
-module.exports = User;
+module.exports = Post;

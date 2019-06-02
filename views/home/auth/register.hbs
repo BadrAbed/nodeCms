@@ -1,7 +1,12 @@
 <div class="card card-register mx-auto mt-5">
     <div class="card-header">Register an Account</div>
+    {{#if success}}
+        <div class="alert alert-success">{{success}}</div>{{/if}}
+    {{#each errors}}
+        <div class="alert alert-danger"> {{this}}</div>
+    {{/each}}
     <div class="card-body">
-        <form action="/register" method="post">
+        <form action="/main/register" method="post">
             <div class="form-group">
                 <div class="form-row">
                     <div class="col-md-6">

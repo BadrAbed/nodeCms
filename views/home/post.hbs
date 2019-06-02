@@ -1,0 +1,165 @@
+<div class="container">
+
+    <div class="row">
+
+        <!-- Post Content Column -->
+        <div class="col-lg-8">
+
+            <!-- Title -->
+            <h1 class="mt-4">{{post.title}}</h1>
+
+            <!-- Author -->
+            <p class="lead">
+                by
+                <a href="#">Start Bootstrap</a>
+            </p>
+
+            <hr>
+
+            <!-- Date/Time -->
+            <p>Posted on {{time date 'MMMM DO YYYY'}}</p>
+
+            <hr>
+
+            <!-- Preview Image -->
+            <img class="img-fluid rounded" src="/uploads/{{#if post.file}}{{post.file}}{{else}}BMW-i8.jpg{{/if}}"
+                 alt="">
+
+            <hr>
+
+            <!-- Post Content -->
+            <p class="lead">"{{post.body}}</p>
+            <hr>
+            {{#if user }}
+                {{#if post.allowComments }}
+                    <!-- Comments Form -->
+                    <div class="card my-4">
+                        <h5 class="card-header">Leave a Comment:</h5>
+                        <div class="card-body">
+                            <form action="/comment/save/{{post.id}}" method="post">
+                                <div class="form-group">
+                                    <textarea name="comment" class="form-control" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                {{/if}}
+            {{/if}}
+
+
+            <!-- Comment with nested comments -->
+            {{# each post.comments}}
+                <div class="media mb-4">
+                    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                    <div class="media-body">
+                        <h5 class="mt-0">{{user.firstName}} {{user.lastName}}</h5>
+                        <h8>{{time this.date 'MMMM D YYYY hh:mm A'}}</h8>
+                        <br>
+
+                        {{this.body}}
+
+                        {{#if ../user }}<a href="#" onclick="reply('{{this.id}}')" id="reply{{this.id}}" class="reply">
+                        reply </a> {{/if}}{{# ifEquals ../user.id this.user.id}}
+                        <a href="/comment/delete/{{this.id}}"> delete </a> {{/ifEquals}}
+
+                        <br>
+                        <div id="replyComment{{this.id}}" style="display: none">
+                            <form method="post" action="/comment/reply/{{this.id}}">
+                                <input type="text" class="form-control" name="replycomment" id="">
+                                <br>
+                                <button type="submit" class="btn btn-outline-success"> reply</button>
+                            </form>
+                        </div>
+
+                        {{# each  childern_comment_id}}
+                            <div class="media mt-4">
+                                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                                <div class="media-body">
+                                    <h5 class="mt-0">{{this.user.firstName}} {{this.user.lastName}}</h5>
+                                    <h8>{{time this.date 'MMMM D YYYY hh:mm A'}}</h8>
+                                    <br>
+
+                                    {{body}}     {{# ifEquals ../../user.id this.user.id}}
+                                    <a href="/comment/delete/{{this.id}}"> delete </a> {{/ifEquals}}</div>
+                            </div>
+                        {{/each}}
+                    </div>
+
+                </div>
+            {{/each}}
+        </div>
+
+        <!-- Sidebar Widgets Column -->
+        <div class="col-md-4">
+
+            <!-- Search Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Search</h5>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button">Go!</button>
+                </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Categories</h5>
+                <div class="card-body">
+                    <div class="row">
+                        {{# each Categories}}
+                            <div class="col-lg-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li>
+                                        <a href="#">{{name}}</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Side Widget</h5>
+                <div class="card-body">
+                    You can put anything you want inside of these side widgets. They are easy to use, and feature the
+                    new Bootstrap 4 card containers!
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /.row -->
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+    <script>
+        $('.reply').click(function (e) {
+            e.preventDefault();
+
+
+        });
+
+        function reply(id) {
+
+            if ($("#replyComment" + id).css("display") == 'none') {
+                $("#replyComment" + id).css("display", "block");
+            }
+            else {
+                $("#replyComment" + id).css("display", "none");
+            }
+
+        }
+
+    </script>
+</div>
+<!-- /.container -->

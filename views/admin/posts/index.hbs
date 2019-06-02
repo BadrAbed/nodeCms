@@ -1,5 +1,8 @@
 <h1> All Posts </h1>
 
+
+{{#if success}}
+    <div class="alert alert-success">{{success}}</div>{{/if}}
 <table class="table table-bordered">
     <thead>
     <tr>
@@ -8,57 +11,78 @@
         <th>Title</th>
 
         <th>Status</th>
+        <th>Category</th>
+        <th>No.Comments</th>
+        <th>Date</th>
         <th>Allow Comments</th>
         <th>Action</th>
     </tr>
     </thead>
     <tbody>
 
-    {{# each Posts }}
+    {{# each Posts as |Postvalue Postkey|}}
         <tr>
-            <td>{{id}}</td>
-            <td><img src="/uploads/{{#if file}}{{file}} {{else}}BMW-i8.jpg{{/if}}  " style="width: 50px;height: 50px"></td>
-            <td>{{title}}</td>
 
-            <td>{{status}}</td>
-            <td>{{allowComments}}</td>
+            <td>{{Postvalue.id}}</td>
+            <td><img src="/uploads/{{#if file}}{{file}} {{else}}BMW-i8.jpg{{/if}}  " style="width: 50px;height: 50px">
+            </td>
+            <td>{{Postvalue.title}}</td>
+
+            <td>{{Postvalue.status}}</td>
+            <th>{{Postvalue.category.name}}</th>
+            <th>{{Postvalue.comments.length}}</th>
+            <td>{{time Postvalue.date 'MMMM D YYYY'}}</td>
+
+            <td>{{Postvalue.allowComments}}</td>
             <td>
-                <button data-toggle="modal" data-target="#editPost{{id}}" class="btn btn-info"><i
+                <button data-toggle="modal" data-target="#editPost{{Postvalue.id}}" class="btn btn-info"><i
                         class="fa fa-edit"></i>
                 </button>
-                <a href="/admin/posts/delete/{{id}}" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
+                <a href="/admin/posts/delete/{{Postvalue.id}}" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
 
             <!-- Modal For Edit Post -->
 
-            <div id="editPost{{id}}" class="modal fade" role="dialog">
+            <div id="editPost{{Postvalue.id}}" class="modal fade" role="dialog">
                 <div class="modal-dialog">
 
                     <!-- Modal content-->
-                    <form action="/admin/posts/edit/{{id}}?_method=Put" method="post">
+                    <form action="/admin/posts/edit/{{Postvalue.id}}?_method=Put" method="post" enctype="multipart/form-data">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Edit Post {{title}}</h4>
+                                <h4 class="modal-title">Edit Post {{Postvalue.title}}</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label for="title"> Title</label>
-                                    <input type="text" name="title" id="title" class="form-control" value="{{title}}">
+                                    <input type="text" name="title" id="title" class="form-control" value="{{Postvalue.title}}">
 
                                 </div>
                                 <div class="form-group">
                                     <label for="status"> Status</label>
                                     <select name="status" id="status" class="form-control">
 
-                                        <option {{#ifEquals status "public" }} selected  {{/ifEquals}}value="public">
+                                        <option {{#ifEquals Postvalue.status "public" }} selected  {{/ifEquals}}value="public">
                                             Public
                                         </option>
-                                        <option {{#ifEquals status "private" }} selected  {{/ifEquals}} value="private">
+                                        <option {{#ifEquals Postvalue.status "private" }} selected  {{/ifEquals}} value="private">
                                             Private
                                         </option>
-                                        <option {{#ifEquals status "draft" }} selected  {{/ifEquals}} value="draft">
+                                        <option {{#ifEquals Postvalue.status "draft" }} selected  {{/ifEquals}} value="draft">
                                             Draft
                                         </option>
+
+                                    </select>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="category"> Categories</label>
+                                    <select name="category" id="category" class="form-control">
+
+                                        {{#each ../Categories as |catvalue catkey|   }}
+                                            <option {{#ifEquals Postvalue.category.id catvalue.id }} selected  {{/ifEquals}} value="{{catvalue.id}}"> {{catvalue.name}}
+                                            </option>
+                                        {{/each}}
 
                                     </select>
 
@@ -66,17 +90,34 @@
                                 <div class="form-check" style="margin: 18px">
                                     <label for="allowComments">
                                         <input type="checkbox" name="allowComments" id="allowComments"
-                                               class="form-check-input" value="true" {{#if allowComments}}
+                                               class="form-check-input" value="true" {{#if Postvalue.allowComments}}
                                                checked {{/if}}>
                                         Allow Comments
                                     </label>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="file"> File</label>
+                                    <input type="file" name="file" id="file" class="form-control">
+                                    <img src="/uploads/{{#if file}}{{file}} {{else}}BMW-i8.jpg{{/if}}  "
+                                         style="width: 50px;height: 50px">
+                                </div>
                                 <div class="form-group">
                                     <label for="body"> Body</label>
-                                    <textarea name="post" id="title" rows="10" class="form-control">{{body}}
+                                    <textarea name="post" id="title" rows="10" class="form-control">{{Postvalue.body}}
                                     </textarea>
                                 </div>
+                                <div class="form-group">
+                                    <label for="category"> Comments</label>
 
+                           {{#each Postvalue.comments}}
+
+                             <h4>{{body}}</h4>
+                           <h8>{{time date 'MMMM DO YYYY'}} By {{user.firstName}}{{user.lastName}}</h8>
+                               <br>
+                           {{/each}}
+
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary"> Submit</button>
@@ -90,5 +131,6 @@
             <!-- end Modal For Edit Post -->
         </tr>
     {{/each}}
+
     </tbody>
 </table>
